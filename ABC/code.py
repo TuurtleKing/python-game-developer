@@ -4,37 +4,38 @@ import time
 import pgzrun
 import random
 
-HEIGHT=600
-WIDTH=600
-TITLE="Alphabet Path Game"
+HEIGHT = 600
+WIDTH = 1000
+TITLE = "Alphabet Path Game"
 
-timer=0
-total_letters=10
-letters=["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
-circler=[]
+timer = 0
+letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S","T","U", "V", "W", "X", "Y", "Z"]
+circles = []  # Renamed for clarity
+total_letters = len(letters)
 
-#Create cirlce actors and place them randomly so it is easyer to use collidpoint
+# Create circle actors and place them randomly
 for i in range(total_letters):
-    cirlce = Actor("satellite")
-    cirlce.x = random.randint(50, WIDTH - 50)
+    circle = Actor("circlee")  # Fixed variable name
+    circle.x = random.randint(50, WIDTH - 50)
     circle.y = random.randint(50, HEIGHT - 50)
-    circler.append(circle)
+    circles.append(circle)
 
-lines=[]
-currentabc=0
-starttime=time.time()
+lines = []
+currentabc = 0
+starttime = time.time()
 
 
 def draw():
-    screen.blit("background", (0, 0))
+   # screen.blit("background", (0, 0))
+    screen.fill("black")
     screen.draw.text(str(round(timer, 1)), (10, 10), fontsize=30)
     
-    #draw circles and put the abc letters over them
-    for i in range(len(circler)):
-        circler[i].draw()
-        screen.draw.text(letters[i], (circler[i].x - 5, circler[i].y - 10), fontsize=30, color="white")
+    # Draw circles and overlay the letter on each
+    for i in range(len(circles)):
+        circles[i].draw()
+        screen.draw.text(letters[i], (circles[i].x - 5, circles[i].y - 10), fontsize=30, color="white")
     
-    #draw green lines between connected circles/abc
+    # Draw green lines between connected circles
     for line in lines:
         screen.draw.line(line[0], line[1], "green")
 
@@ -42,29 +43,23 @@ def draw():
 def on_mouse_down(pos):
     global currentabc, lines
     if currentabc < total_letters:
-        #check if you clicked the correct circle/abc in order
-        if circler[currentabc].collidepoint(pos):
+        # Check if you clicked the correct letter/circle in sequence
+        if circles[currentabc].collidepoint(pos):
             if currentabc != 0:
-                start=circler[currentabc].pos
-                end=circler[currentabc - 1].pos
+                start = circles[currentabc].pos
+                end = circles[currentabc - 1].pos
                 lines.append([start, end])
-            currentsat = currentsat + 1
+            currentabc = currentabc + 1  # Fixed variable name
         else:
-            #reset if click the wrong place
-            currentabc=0
-            lines=[]
+            # Reset path on wrong click
+            currentabc = 0
+            lines = []
 
 
 def update():
     global timer
-    if currentsat<total_letters:
+    if currentabc < total_letters:  # Fixed variable name
         timer = time.time() - starttime
 
 
 pgzrun.go()
-
-
-
-
-
-#this game does not work since i cant find downloadable black whire circles
